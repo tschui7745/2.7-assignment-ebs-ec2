@@ -2,11 +2,9 @@ locals {
   name_prefix = "tschui"
 }
 
-
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "${local.name_prefix}-s3-bucket" # The name of the S3 bucket (must be globally unique)
 }
-
 
 /*-Create EC2 Variable-*/
 
@@ -49,11 +47,7 @@ data "aws_instance" "ec2_instance_id" {
     name   = "tag:Name"
     values = ["${local.name_prefix}-ebs*"]
   }
-
-  #instance_id = "i-0296a221327a9e091" # Replace with your EC2 instance ID
 }
-
-
 
 /*-Create EC2 Instanace-*/
 
@@ -89,6 +83,8 @@ resource "aws_security_group" "ec2_security_group" {
   }
 }
 
+/*-Create EBS Volume-*/
+
 resource "aws_ebs_volume" "ec2_ebs_volume" {
   availability_zone = data.aws_instance.ec2_instance_id.availability_zone # Use the same AZ as EC2 instance
   size              = 1                                                   # Volume size in GiB
@@ -101,7 +97,8 @@ resource "aws_ebs_volume" "ec2_ebs_volume" {
   }
 }
 
-# Attach the EBS volume to the EC2 instance
+/*-Attach the EBS volume to the EC2 instance-*/
+
 resource "aws_volume_attachment" "ec2_ebs_volume_attach" {
   device_name = "/dev/sdb" # You can specify any device name like /dev/sdf, /dev/xvdf, etc.
   volume_id   = aws_ebs_volume.ec2_ebs_volume.id
