@@ -1,8 +1,3 @@
-
-output "s3_bucket_name" {
-  value = aws_s3_bucket.s3_bucket.bucket
-}
-
 output "vpc_id" {
   value = data.aws_vpc.vpc_id.id
 }

@@ -2,16 +2,12 @@ locals {
   name_prefix = "tschui"
 }
 
-resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "${local.name_prefix}-s3-bucket" # The name of the S3 bucket (must be globally unique)
-}
-
 /*-Create EC2 Variable-*/
 
 data "aws_vpc" "vpc_id" {
   filter {
     name   = "tag:Name"
-    values = ["${local.name_prefix}-vpc"]
+    values = ["shared-vpc"]
   }
 }
 
