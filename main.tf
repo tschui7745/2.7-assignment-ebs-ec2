@@ -33,18 +33,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-data "aws_instance" "ec2_instance_id" {
-
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.vpc_id.id]
-  }
-  filter {
-    name   = "tag:Name"
-    values = ["${local.name_prefix}-ebs*"]
-  }
-}
-
 /*-Create EC2 Instanace-*/
 
 resource "aws_instance" "amazon_linux_ec2" {
@@ -79,6 +67,23 @@ resource "aws_security_group" "ec2_security_group" {
   }
 }
 
+data "aws_instance" "ec2_instance_id" {
+
+  instance_id = aws_instance.amazon_linux_ec2.id
+
+  /*
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc_id.id]
+  }
+
+  filter {
+    name   = "tag:Name"
+    values = ["${local.name_prefix}-ebs*"]
+  }
+  */
+}
+
 /*-Create EBS Volume-*/
 
 resource "aws_ebs_volume" "ec2_ebs_volume" {
@@ -100,3 +105,5 @@ resource "aws_volume_attachment" "ec2_ebs_volume_attach" {
   volume_id   = aws_ebs_volume.ec2_ebs_volume.id
   instance_id = data.aws_instance.ec2_instance_id.id
 }
+
+
